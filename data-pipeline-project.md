@@ -9,7 +9,7 @@ In this project you are going to build a data pipeline that is processing the `G
 Bonus task if you have the time:
 
 1. Upload the data to an local SQL database or BigQuery and create dbt models that are calculating the revenue per day on it.
-2. Union the Yellow and Green Taxi Trips and calculate the revenue per day and taxi type (tip this column has to be created by you). The result should be saved as a parquet file in a GCS bucket.
+
 
 ## Questions:
 

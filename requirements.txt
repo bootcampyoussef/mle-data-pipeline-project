@@ -1,4 +1,0 @@
-pandas
-pyarrow
-google-cloud-storage
-click
