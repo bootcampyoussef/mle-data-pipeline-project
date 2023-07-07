@@ -8,7 +8,7 @@ In this project you are going to build a data pipeline that is processing the `G
 
 Bonus task if you have the time:
 
-1. Upload the data to an local SQL database or BigQuery and create dbt models that are calculating the revenue per day on it.
+1. Use prefect for the Workflow Orechestration.
 
 
 ## Questions:
