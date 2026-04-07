@@ -49,30 +49,51 @@ This repository now includes a complete local reference implementation in [solut
 
 ### Run the reference solution
 
+`macOS` / Linux:
+
 ```bash
 cd solution
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e '.[dev]'
-python -m data_pipeline.cli all
+pip install -r requirements.txt
+python scripts/run_pipeline.py
 pytest
 ```
 
-You can also use the helper scripts:
+`requirements.txt` pins the exact dependency versions that were tested with this solution.
+
+`Windows`:
 
 ```bash
 cd solution
-python scripts/download_data.py
-python scripts/run_pipeline.py
+py -3 -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python scripts\run_pipeline.py
+pytest
 ```
 
 Optional bonus flow:
 
+`macOS` / Linux:
+
 ```bash
 cd solution
-pip install -e '.[dev,orchestration]'
+source .venv/bin/activate
+pip install prefect==3.6.25
 python scripts/run_prefect_flow.py
 ```
+
+`Windows`:
+
+```bash
+cd solution
+.venv\Scripts\activate
+pip install prefect==3.6.25
+python scripts\run_prefect_flow.py
+```
+
+The helper scripts add `solution/src/` to `PYTHONPATH` automatically, so you do not need an editable package install.
 
 ### Expected outputs
 

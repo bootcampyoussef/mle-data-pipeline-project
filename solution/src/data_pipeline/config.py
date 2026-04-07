@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 DEFAULT_MONTHS = ("2025-01", "2025-02", "2025-03")
