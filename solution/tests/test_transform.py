@@ -1,3 +1,5 @@
+"""Tests for the revenue transformation logic."""
+
 from pathlib import Path
 
 import pandas as pd
@@ -6,6 +8,7 @@ from data_pipeline.transform import calculate_daily_revenue
 
 
 def test_calculate_daily_revenue_uses_total_amount(tmp_path: Path) -> None:
+    """Use total_amount directly when the source file includes it."""
     january_path = tmp_path / "green_tripdata_2025-01.parquet"
     pd.DataFrame(
         {
@@ -32,6 +35,7 @@ def test_calculate_daily_revenue_uses_total_amount(tmp_path: Path) -> None:
 def test_calculate_daily_revenue_falls_back_to_component_columns(
     tmp_path: Path,
 ) -> None:
+    """Sum fare components when total_amount is not available."""
     february_path = tmp_path / "green_tripdata_2025-02.parquet"
     pd.DataFrame(
         {

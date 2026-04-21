@@ -1,3 +1,5 @@
+"""Transform raw Green Taxi trip data into daily revenue outputs."""
+
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,15 +25,20 @@ FALLBACK_REVENUE_COLUMNS = (
 
 @dataclass(frozen=True)
 class PipelineOutputs:
+    """Paths written by one successful pipeline run."""
+
     daily_revenue_csv: Path
     daily_revenue_parquet: Path
     metadata_json: Path
 
 
 def _build_revenue_series(frame: pd.DataFrame) -> pd.Series:
+    """Return one revenue value per trip from the columns available in the data."""
     if "total_amount" in frame.columns:
         return pd.to_numeric(frame["total_amount"], errors="coerce")
 
+    # Some taxi datasets expose fare components instead of total_amount.
+    # Summing the components keeps the pipeline useful for those file variants.
     component_columns = [
         column for column in FALLBACK_REVENUE_COLUMNS if column in frame.columns
     ]
@@ -51,6 +58,7 @@ def _build_revenue_series(frame: pd.DataFrame) -> pd.Series:
 
 
 def prepare_trip_frame(frame: pd.DataFrame) -> pd.DataFrame:
+    """Keep only valid pickup dates and revenue values needed for aggregation."""
     if PICKUP_DATETIME_COLUMN not in frame.columns:
         raise ValueError(f"Missing expected column: {PICKUP_DATETIME_COLUMN}")
 
@@ -60,6 +68,8 @@ def prepare_trip_frame(frame: pd.DataFrame) -> pd.DataFrame:
         errors="coerce",
     )
     prepared = prepared.dropna(subset=[PICKUP_DATETIME_COLUMN])
+
+    # Normalizing timestamps to midnight lets us group all trips by calendar day.
     prepared["service_date"] = prepared[PICKUP_DATETIME_COLUMN].dt.normalize()
     prepared["revenue_amount"] = _build_revenue_series(prepared)
     prepared = prepared.dropna(subset=["revenue_amount"])
@@ -70,6 +80,7 @@ def prepare_trip_frame(frame: pd.DataFrame) -> pd.DataFrame:
 def calculate_daily_revenue(
     input_paths: Iterable[Path],
 ) -> tuple[pd.DataFrame, dict[str, object]]:
+    """Read parquet files and calculate daily trip counts plus daily revenue."""
     per_file_frames: list[pd.DataFrame] = []
     input_path_list = [Path(path) for path in input_paths]
 
@@ -99,6 +110,8 @@ def calculate_daily_revenue(
             }
         )
 
+    # Each file is summarized first, then the summaries are combined in case
+    # multiple files contain trips for the same service date.
     daily_revenue = cast(
         pd.DataFrame,
         pd.concat(per_file_frames, ignore_index=True)
@@ -129,6 +142,7 @@ def write_outputs(
     metadata: dict[str, object],
     output_dir: Path = PROCESSED_DIR,
 ) -> PipelineOutputs:
+    """Write the final dataframe and metadata to the processed data directory."""
     output_dir.mkdir(parents=True, exist_ok=True)
 
     csv_path = output_dir / "daily_revenue.csv"
@@ -150,6 +164,7 @@ def run_pipeline(
     input_paths: Iterable[Path],
     output_dir: Path = PROCESSED_DIR,
 ) -> tuple[PipelineOutputs, dict[str, object]]:
+    """Convenience function used by the CLI and Prefect flow."""
     daily_revenue, metadata = calculate_daily_revenue(input_paths)
     outputs = write_outputs(daily_revenue, metadata, output_dir)
     return outputs, metadata
