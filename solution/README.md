@@ -1,43 +1,80 @@
-# Solution
+# Reference Solution
 
-This folder contains a complete local-first reference implementation for the project prompt in the repository root README.
+This folder contains a complete local-first reference implementation for this project.
 
-Use the commands from the root README to install dependencies, download the 2025 Green Taxi parquet files, and build the daily revenue outputs.
+### What the solution does
 
-## Answers To The Project Questions
+1. Downloads `green_tripdata_2025-01.parquet`, `green_tripdata_2025-02.parquet` and `green_tripdata_2025-03.parquet` into `solution/data/raw/`.
+2. Reads those parquet files locally.
+3. Aggregates `total_amount` by pickup date to produce daily revenue.
+4. Writes outputs to `solution/data/processed/` as CSV, parquet and JSON metadata.
+5. Includes an optional Prefect flow for the bonus orchestration task.
 
-### 1. What are the steps you took to complete the project?
+### Project structure
 
-<details>
-<summary>Show answer</summary>
+- [solution/src/data_pipeline/cli.py](solution/src/data_pipeline/cli.py) exposes `download`, `run` and `all` commands.
+- [solution/src/data_pipeline/download.py](solution/src/data_pipeline/download.py) handles dataset downloads.
+- [solution/src/data_pipeline/prefect_flow.py](solution/src/data_pipeline/prefect_flow.py) contains the optional Prefect flow.
+- [solution/src/data_pipeline/transform.py](solution/src/data_pipeline/transform.py) calculates daily revenue and writes outputs.
+- [solution/tests/test_transform.py](solution/tests/test_transform.py) covers the revenue aggregation logic.
 
-1. Defined a local-first version of the assignment so the workflow no longer depends on GCP.
-2. Added a download step that stages the NYC TLC parquet files in a raw data folder.
-3. Built a transformation step that reads the raw files and aggregates `total_amount` by pickup date.
-4. Wrote the results to CSV, parquet, and JSON metadata files.
-5. Added tests for the revenue calculation logic and an optional Prefect flow for orchestration.
+### Run the reference solution
 
-</details>
+### **`macOS`**
 
-### 2. What challenges did you face?
+```bash
+cd solution
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python scripts/run_pipeline.py
+pytest
+```
 
-<details>
-<summary>Show answer</summary>
+### **`Windows`**
 
-1. The original prompt assumed a cloud bucket, so the project needed a clean local equivalent that still felt realistic.
-2. Taxi data schemas can vary over time, so the solution includes a fallback revenue calculation when `total_amount` is unavailable.
-3. The repository originally only contained docs, so both the implementation and the final instructions had to be aligned from scratch.
+For `PowerShell` CLI:
 
-</details>
+```PowerShell
+cd solution
+py -3 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python scripts/run_pipeline.py
+pytest
+```
 
-### 3. What would you do differently with more time?
+For `Git-Bash` CLI:
 
-<details>
-<summary>Show answer</summary>
+```bash
+cd solution
+py -3 -m venv .venv
+source .venv/Scripts/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python scripts/run_pipeline.py
+pytest
+```
 
-1. Add data-quality checks for nulls, duplicate trips, and outlier fares.
-2. Add richer logging and metrics for each pipeline stage.
-3. Package the workflow with Docker and CI so it can be run the same way everywhere.
-4. Expand tests to cover schema drift and larger integration scenarios.
+[requirements.txt](./requirements.txt) pins the exact dependency versions that were used for this solution.
 
-</details>
+### Optional bonus flow
+
+```bash
+python scripts/run_prefect_flow.py
+```
+
+The helper scripts add `solution/src/` to `PYTHONPATH` automatically, so you do not need an editable package install.
+
+### Expected outputs
+
+After a successful run, you should see:
+
+- `solution/data/raw/green_tripdata_2025-01.parquet`
+- `solution/data/raw/green_tripdata_2025-02.parquet`
+- `solution/data/raw/green_tripdata_2025-03.parquet`
+- `solution/data/processed/daily_revenue.csv`
+- `solution/data/processed/daily_revenue.parquet`
+- `solution/data/processed/pipeline_metadata.json`
