@@ -7,7 +7,7 @@ Please **use this repository as a template** for your data pipeline project. Cre
 In this project you are going to build a data pipeline that processes the `Green Taxi Trips` portion of the NYC Taxi Trip dataset.
 
 1. Write a script that downloads the data for the first three months of 2025 and stores it in a local staging directory.
-2. Write an ETL or ELT pipeline that reads those locally staged files, processes the data, and calculates the revenue per day.
+2. Write an ETL or ELT pipeline that reads the locally staged files, processes the data and calculates revenue per day.
 
 Bonus task, if you have time:
 
@@ -22,3 +22,4 @@ Bonus task, if you have time:
 ## Reference solution
 
 This repository includes a complete local reference implementation in [solution/](solution).
+Use it to compare implementation choices and expected outputs.

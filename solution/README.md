@@ -2,25 +2,25 @@
 
 This folder contains a complete local-first reference implementation for this project.
 
-### What the solution does
+## What the solution does
 
-1. Downloads `green_tripdata_2025-01.parquet`, `green_tripdata_2025-02.parquet` and `green_tripdata_2025-03.parquet` into `solution/data/raw/`.
+1. Downloads the January, February and March 2025 Green Taxi parquet files into `data/raw/`.
 2. Reads those parquet files locally.
 3. Aggregates `total_amount` by pickup date to produce daily revenue.
-4. Writes outputs to `solution/data/processed/` as CSV, parquet and JSON metadata.
-5. Includes an optional Prefect flow for the bonus orchestration task.
+4. Writes outputs to `data/processed/` as CSV, parquet and JSON metadata.
+5. Includes an optional Prefect flow for orchestration.
 
-### Project structure
+## Project structure
 
-- [solution/src/data_pipeline/cli.py](solution/src/data_pipeline/cli.py) exposes `download`, `run` and `all` commands.
-- [solution/src/data_pipeline/download.py](solution/src/data_pipeline/download.py) handles dataset downloads.
-- [solution/src/data_pipeline/prefect_flow.py](solution/src/data_pipeline/prefect_flow.py) contains the optional Prefect flow.
-- [solution/src/data_pipeline/transform.py](solution/src/data_pipeline/transform.py) calculates daily revenue and writes outputs.
-- [solution/tests/test_transform.py](solution/tests/test_transform.py) covers the revenue aggregation logic.
+- [src/data_pipeline/cli.py](src/data_pipeline/cli.py) exposes the `download`, `run` and `all` commands.
+- [src/data_pipeline/download.py](src/data_pipeline/download.py) handles dataset downloads.
+- [src/data_pipeline/prefect_flow.py](src/data_pipeline/prefect_flow.py) contains the optional Prefect flow.
+- [src/data_pipeline/transform.py](src/data_pipeline/transform.py) calculates daily revenue and writes outputs.
+- [tests/test_transform.py](tests/test_transform.py) covers the revenue aggregation logic.
 
-### Run the reference solution
+## Run the reference solution
 
-### **`macOS`**
+### macOS
 
 ```bash
 cd solution
@@ -32,11 +32,11 @@ python scripts/run_pipeline.py
 pytest
 ```
 
-### **`Windows`**
+### Windows
 
 For `PowerShell` CLI:
 
-```PowerShell
+```powershell
 cd solution
 py -3 -m venv .venv
 .venv\Scripts\Activate.ps1
@@ -60,21 +60,59 @@ pytest
 
 [requirements.txt](./requirements.txt) pins the exact dependency versions that were used for this solution.
 
-### Optional bonus flow
+## Optional Prefect flow
+
+Prefect is intentionally optional. Install it only if you want to try the orchestration version of the same local pipeline.
+Run these commands from the activated `solution` virtual environment you created above.
+
+This reference solution is meant to let Prefect start a temporary local server for the run.
+If you previously ran another Prefect project, an old background server or a saved `PREFECT_API_URL` can cause errors.
+
+Use the cleanup commands below before running the flow.
+If Prefect says no server is running or the setting is not set, you can continue.
+
+`macOS`:
 
 ```bash
+python -m pip install prefect==3.6.25
+prefect server stop
+prefect config unset PREFECT_API_URL --yes
+unset PREFECT_API_URL
 python scripts/run_prefect_flow.py
 ```
 
-The helper scripts add `solution/src/` to `PYTHONPATH` automatically, so you do not need an editable package install.
+`Windows PowerShell`:
 
-### Expected outputs
+```powershell
+python -m pip install prefect==3.6.25
+prefect server stop
+prefect config unset PREFECT_API_URL --yes
+Remove-Item Env:PREFECT_API_URL -ErrorAction SilentlyContinue
+python scripts/run_prefect_flow.py
+```
+
+`Git-Bash`:
+
+```bash
+python -m pip install prefect==3.6.25
+prefect server stop
+prefect config unset PREFECT_API_URL --yes
+unset PREFECT_API_URL
+python scripts/run_prefect_flow.py
+```
+
+The helper scripts add the local `src/` directory to `PYTHONPATH` automatically, so you do not need an editable package install.
+
+When you are done with the optional flow, you can stop any background Prefect server with `prefect server stop`.
+If you intentionally want to use a dedicated Prefect server instead of the temporary server, start it first with `prefect server start --background`, check it with `prefect server status`, and then run the flow.
+
+## Expected outputs
 
 After a successful run, you should see:
 
-- `solution/data/raw/green_tripdata_2025-01.parquet`
-- `solution/data/raw/green_tripdata_2025-02.parquet`
-- `solution/data/raw/green_tripdata_2025-03.parquet`
-- `solution/data/processed/daily_revenue.csv`
-- `solution/data/processed/daily_revenue.parquet`
-- `solution/data/processed/pipeline_metadata.json`
+- `data/raw/green_tripdata_2025-01.parquet`
+- `data/raw/green_tripdata_2025-02.parquet`
+- `data/raw/green_tripdata_2025-03.parquet`
+- `data/processed/daily_revenue.csv`
+- `data/processed/daily_revenue.parquet`
+- `data/processed/pipeline_metadata.json`
