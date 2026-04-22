@@ -2,10 +2,8 @@
 
 from pathlib import Path
 
-# The miniproject asks for the first three months of 2025.
 DEFAULT_MONTHS = ("2025-01", "2025-02", "2025-03")
 
-# NYC TLC publishes the parquet files under this public base URL.
 DEFAULT_BASE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data"
 DEFAULT_FILENAME_TEMPLATE = "green_tripdata_{month}.parquet"
 DEFAULT_DOWNLOAD_TIMEOUT_SECONDS = 60

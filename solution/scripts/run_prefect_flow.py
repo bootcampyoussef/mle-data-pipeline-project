@@ -13,7 +13,6 @@ if __name__ == "__main__":
     try:
         green_taxi_local_pipeline()
     except RuntimeError as error:
-        # Keep the common stale Prefect server problem readable.
         if "Prefect could not reach the configured API" in str(error):
             raise SystemExit(str(error)) from None
         raise

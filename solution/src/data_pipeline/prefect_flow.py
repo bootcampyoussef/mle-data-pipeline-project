@@ -37,7 +37,7 @@ def green_taxi_local_pipeline(
 ) -> dict[str, object]:
     """Build and run the optional Prefect flow."""
     try:
-        # Prefect stays optional, so the core solution works without installing it.
+        # Prefect flow is optional, so the core solution works without installing it.
         prefect = importlib.import_module("prefect")
     except (
         ImportError
@@ -79,8 +79,6 @@ def green_taxi_local_pipeline(
     try:
         return pipeline_flow()
     except RuntimeError as error:
-        # A stopped server plus a saved PREFECT_API_URL is a common local
-        # Prefect issue when reusing an environment from another project.
         if "Failed to reach API" in str(error):
             raise RuntimeError(
                 "Prefect could not reach the configured API. If you stopped a previous "

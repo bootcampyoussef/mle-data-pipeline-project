@@ -71,11 +71,12 @@ If you previously ran another Prefect project, an old background server or a sav
 Use the cleanup commands below before running the flow.
 If Prefect says no server is running or the setting is not set, you can continue.
 
-`macOS`:
+`macOS` / `Linux` / `Windows Git-Bash`:
 
 ```bash
 python -m pip install prefect==3.6.25
 prefect server stop
+prefect config set PREFECT_SERVER_ALLOW_EPHEMERAL_MODE=true
 prefect config unset PREFECT_API_URL --yes
 unset PREFECT_API_URL
 python scripts/run_prefect_flow.py
@@ -86,24 +87,16 @@ python scripts/run_prefect_flow.py
 ```powershell
 python -m pip install prefect==3.6.25
 prefect server stop
+prefect config set PREFECT_SERVER_ALLOW_EPHEMERAL_MODE=true
 prefect config unset PREFECT_API_URL --yes
 Remove-Item Env:PREFECT_API_URL -ErrorAction SilentlyContinue
-python scripts/run_prefect_flow.py
-```
-
-`Git-Bash`:
-
-```bash
-python -m pip install prefect==3.6.25
-prefect server stop
-prefect config unset PREFECT_API_URL --yes
-unset PREFECT_API_URL
 python scripts/run_prefect_flow.py
 ```
 
 The helper scripts add the local `src/` directory to `PYTHONPATH` automatically, so you do not need an editable package install.
 
 When you are done with the optional flow, you can stop any background Prefect server with `prefect server stop`.
+
 If you intentionally want to use a dedicated Prefect server instead of the temporary server, start it first with `prefect server start --background`, check it with `prefect server status`, and then run the flow.
 
 ## Expected outputs
