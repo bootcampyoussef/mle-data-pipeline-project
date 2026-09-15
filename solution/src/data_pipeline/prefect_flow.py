@@ -22,7 +22,7 @@ def download_step(months: list[str], raw_dir: Path, base_url: str, force: bool) 
 def transform_step(
     months: list[str], raw_dir: Path, output_dir: Path
 ) -> dict[str, object]:
-    """Prefect task body for transforming local parquet files into outputs."""
+    """Prefect task body for transforming local Parquet files into outputs."""
     input_paths = [raw_dir / build_dataset_filename(month) for month in months]
     _, metadata = run_pipeline(input_paths, output_dir)
     return metadata

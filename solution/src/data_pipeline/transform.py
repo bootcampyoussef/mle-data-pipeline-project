@@ -1,9 +1,10 @@
 """Transform raw Green Taxi trip data into daily revenue outputs."""
 
 import json
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, cast
+from typing import cast
 
 import pandas as pd
 
@@ -80,12 +81,12 @@ def prepare_trip_frame(frame: pd.DataFrame) -> pd.DataFrame:
 def calculate_daily_revenue(
     input_paths: Iterable[Path],
 ) -> tuple[pd.DataFrame, dict[str, object]]:
-    """Read parquet files and calculate daily trip counts plus daily revenue."""
+    """Read Parquet files and calculate daily trip counts plus daily revenue."""
     per_file_frames: list[pd.DataFrame] = []
     input_path_list = [Path(path) for path in input_paths]
 
     if not input_path_list:
-        raise ValueError("No input parquet files were provided.")
+        raise ValueError("No input Parquet files were provided.")
 
     metadata_files = []
     total_rows_read = 0
@@ -104,8 +105,8 @@ def calculate_daily_revenue(
         metadata_files.append(
             {
                 "file_name": input_path.name,
-                "rows_read": int(len(trip_frame)),
-                "rows_used": int(len(prepared)),
+                "rows_read": len(trip_frame),
+                "rows_used": len(prepared),
                 "revenue_total": float(round(prepared["revenue_amount"].sum(), 2)),
             }
         )
@@ -129,7 +130,7 @@ def calculate_daily_revenue(
 
     metadata: dict[str, object] = {
         "source_files": metadata_files,
-        "days_in_output": int(len(daily_revenue)),
+        "days_in_output": len(daily_revenue),
         "rows_read": int(total_rows_read),
         "trips_in_output": int(daily_revenue["trip_count"].sum()),
         "revenue_total": float(round(daily_revenue["daily_revenue"].sum(), 2)),
@@ -142,7 +143,7 @@ def write_outputs(
     metadata: dict[str, object],
     output_dir: Path = PROCESSED_DIR,
 ) -> PipelineOutputs:
-    """Write the final dataframe and metadata to the processed data directory."""
+    """Write the final DataFrame and metadata to the processed data directory."""
     output_dir.mkdir(parents=True, exist_ok=True)
 
     csv_path = output_dir / "daily_revenue.csv"

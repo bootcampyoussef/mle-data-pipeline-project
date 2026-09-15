@@ -1,8 +1,8 @@
-"""Download helpers for the raw NYC Green Taxi parquet files."""
+"""Download helpers for the raw NYC Green Taxi Parquet files."""
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
 import requests
 
@@ -43,7 +43,7 @@ def download_month(
     with requests.get(url, stream=True, timeout=timeout_seconds) as response:
         response.raise_for_status()
         with destination.open("wb") as output_file:
-            # Stream in chunks so large parquet files do not need to live in memory.
+            # Stream in chunks so large Parquet files do not need to live in memory.
             for chunk in response.iter_content(chunk_size=1024 * 1024):
                 if chunk:
                     output_file.write(chunk)

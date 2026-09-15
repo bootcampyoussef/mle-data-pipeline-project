@@ -79,7 +79,7 @@ def cli() -> None:
     "--force", is_flag=True, help="Download files even when they already exist."
 )
 def download(months: str | None, raw_dir: Path, base_url: str, force: bool) -> None:
-    """Download the source parquet files."""
+    """Download the source Parquet files."""
     handle_download(raw_dir, parse_months(months), base_url, force)
 
 
@@ -98,7 +98,7 @@ def download(months: str | None, raw_dir: Path, base_url: str, force: bool) -> N
     type=click.Path(file_okay=False, path_type=Path),
 )
 def run_command(months: str | None, raw_dir: Path, output_dir: Path) -> None:
-    """Transform raw parquet files into daily revenue outputs."""
+    """Transform raw Parquet files into daily revenue outputs."""
     handle_run(raw_dir, output_dir, parse_months(months))
 
 
