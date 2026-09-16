@@ -43,8 +43,8 @@ def green_taxi_local_pipeline(
         ImportError
     ) as error:  # pragma: no cover - exercised only when Prefect is missing
         raise ImportError(
-            "Prefect is not installed. Install the optional orchestration dependencies with "
-            "'pip install prefect==3.6.25'."
+            "Prefect is not installed. Install the project dependencies with "
+            "'uv sync' from the repository root."
         ) from error
 
     flow = prefect.flow
@@ -83,7 +83,7 @@ def green_taxi_local_pipeline(
             raise RuntimeError(
                 "Prefect could not reach the configured API. If you stopped a previous "
                 "local Prefect server, clear the stale API setting with "
-                "'prefect config unset PREFECT_API_URL --yes' and unset the "
+                "'uv run prefect config unset PREFECT_API_URL --yes' and unset the "
                 "PREFECT_API_URL environment variable before rerunning this script."
             ) from error
         raise
