@@ -16,10 +16,10 @@ PROCESSED_DIR = DATA_DIR / "processed"
 
 
 def build_dataset_filename(month: str) -> str:
-    """Return the expected Green Taxi parquet filename for one month."""
+    """Return the expected Green Taxi Parquet filename for one month."""
     return DEFAULT_FILENAME_TEMPLATE.format(month=month)
 
 
 def build_dataset_url(month: str, base_url: str = DEFAULT_BASE_URL) -> str:
-    """Return the public download URL for one Green Taxi parquet file."""
+    """Return the public download URL for one Green Taxi Parquet file."""
     return f"{base_url.rstrip('/')}/{build_dataset_filename(month)}"

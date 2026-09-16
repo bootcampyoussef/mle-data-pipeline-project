@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pandas as pd
-
 from data_pipeline.transform import calculate_daily_revenue
 
 
