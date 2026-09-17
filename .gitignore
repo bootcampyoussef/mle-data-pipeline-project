@@ -174,3 +174,6 @@ solution/data/processed/*
 # Project data files
 data/raw/*
 !data/raw/.gitkeep
+
+
+data/processed/*.parquet
