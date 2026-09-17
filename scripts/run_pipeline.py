@@ -6,24 +6,34 @@ from data_pipeline.transform import transform_rides
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-INPUT_PATH = PROJECT_ROOT / "data" / "raw" / "green_tripdata_2025-01.parquet"
-OUTPUT_PATH = PROJECT_ROOT / "data" / "processed" / "green_tripdata_2025-01.parquet"
+RAW_DIR = PROJECT_ROOT / "data" / "raw"
+PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
 
 def run_pipeline() -> None:
     """run complete pipeline"""
 
-    print(f"extrating data from : {INPUT_PATH}")
-    rides = extract_parquet(INPUT_PATH)
-    print(f"extrated {rides.height:,} rows")
+    input_files = sorted(RAW_DIR.glob("green_tripdata_*.parquet"))
 
-    print(f"Transforming data ...")
-    transformed_rides = transform_rides(rides)
+    if not input_files:
+        raise FileNotFoundError(f"No Green Taxi parquet files found")
 
-    print(f"Loadin data to : {OUTPUT_PATH}")
-    load_parquet(transformed_rides, OUTPUT_PATH)
+    for input_path in input_files:
+        print(f"\nExtracting data from: {input_path}")
+        rides = extract_parquet(input_path)
+        print(f"Extracted {rides.height:,} rows")
 
-    print(f"Pipeline completed successfuly ...")
+        print(f"Transforming data ....")
+        transformed_rides = transform_rides(rides)
+
+        print(f"Rows afer transformation : {transformed_rides.height:,}")
+
+        output_path = PROCESSED_DIR / input_path.name
+
+        print(f"loading data to : {output_path}")
+        load_parquet(transformed_rides, output_path)
+
+    print(f"Pipeline completed successfuly w")
 
 
 if __name__ == "__main__":
