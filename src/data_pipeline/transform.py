@@ -1,8 +1,8 @@
 import polars as pl
 
 REQUIRED_COLUMNS = [
-    "tpep_pickup_datetime",
-    "tpep_dropoff_datetime",
+    "lpep_pickup_datetime",
+    "lpep_dropoff_datetime",
     "trip_distance",
     "total_amount",
 ]
@@ -23,12 +23,12 @@ def transform_rides(df: pl.DataFrame) -> pl.DataFrame:
         .filter(
             (pl.col("trip_distance") > 0)
             & (pl.col("total_amount") >= 0)
-            & (pl.col("tpep_dropoff_datetime") >= pl.col("tpep_pickup_datetime"))
+            & (pl.col("lpep_dropoff_datetime") >= pl.col("lpep_pickup_datetime"))
         )
         .with_columns(
             [
-                pl.col("tpep_pickup_datetime").dt.date().alias("pickup_date"),
-                (pl.col("tpep_dropoff_datetime") - pl.col("tpep_pickup_datetime"))
+                pl.col("lpep_pickup_datetime").dt.date().alias("pickup_date"),
+                (pl.col("lpep_dropoff_datetime") - pl.col("lpep_pickup_datetime"))
                 .dt.total_minutes()
                 .alias("trip_duration_minutes"),
             ]

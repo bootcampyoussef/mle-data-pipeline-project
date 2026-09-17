@@ -10,12 +10,12 @@ def test_transform_rides() -> None:
 
     rides = pl.DataFrame(
         {
-            "tpep_pickup_datetime": [
+            "lpep_pickup_datetime": [
                 datetime(2025, 1, 1, 10, 0),
                 datetime(2025, 1, 1, 11, 0),
                 datetime(2025, 1, 1, 12, 0),
             ],
-            "tpep_dropoff_datetime": [
+            "lpep_dropoff_datetime": [
                 datetime(2025, 1, 1, 10, 30),
                 datetime(2025, 1, 1, 11, 20),
                 datetime(2025, 1, 1, 11, 50),
